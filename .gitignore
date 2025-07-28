@@ -1,0 +1,18 @@
+# .gitignore
+
+# Ignore the file containing secret API keys
+.env
+
+# Ignore Python's virtual environment folder (if you have one)
+venv/
+/venv/
+
+# Ignore Python's cache files
+__pycache__/
+*.pyc
+
+# Ignore the local data cache folder
+cache/
+
+# Ignore logs
+logs/

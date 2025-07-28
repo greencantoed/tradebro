@@ -1,0 +1,37 @@
+[
+    {
+      "concept": "Price-to-Earnings (P/E) Ratio",
+      "keywords": ["p/e", "pe ratio", "price-to-earnings", "valuation", "multiple"],
+      "summary": "The P/E ratio is a valuation metric that compares a company's current share price to its per-share earnings. It is calculated as Market Value per Share / Earnings per Share (EPS).",
+      "explanation": "A high P/E ratio could mean that a stock's price is high relative to earnings and possibly overvalued. Conversely, a low P/E might indicate that the current stock price is low relative to earnings and possibly undervalued. It is most useful for comparing companies within the same industry.",
+      "type": "Valuation Metric"
+    },
+    {
+      "concept": "Sharpe Ratio",
+      "keywords": ["sharpe ratio", "risk-adjusted return", "risk", "volatility"],
+      "summary": "The Sharpe Ratio measures the performance of an investment compared to a risk-free asset, after adjusting for its risk. It is calculated as (Return of Portfolio - Risk-Free Rate) / Standard Deviation of the Portfolio's Excess Return.",
+      "explanation": "A higher Sharpe Ratio indicates a better risk-adjusted return. A ratio > 1 is generally considered good, > 2 is very good, and > 3 is excellent. A negative Sharpe Ratio indicates that a risk-free asset would perform better than the security being analyzed.",
+      "type": "Risk Metric"
+    },
+    {
+      "concept": "Insider Transactions",
+      "keywords": ["insider trading", "insider transactions", "ceo buying", "executive selling"],
+      "summary": "Insider transactions are the buying or selling of a publicly-traded company's stock by someone with non-public, material information about that stock. This includes directors, officers, and major shareholders.",
+      "explanation": "Insider 'buys' are often seen as a bullish signal, as it implies that the company's own leadership is confident in the future stock performance. Insider 'sells' are more ambiguous; they can occur for many reasons (diversification, personal finance) and are not always a bearish signal, though large, frequent sells can be a red flag.",
+      "type": "Sentiment Indicator"
+    },
+    {
+      "concept": "Beta (β)",
+      "keywords": ["beta", "volatility", "market risk", "systematic risk"],
+      "summary": "Beta is a measure of a stock's volatility in relation to the overall market (usually the S&P 500). The market itself has a beta of 1.0.",
+      "explanation": "A stock with a beta > 1.0 is considered more volatile than the market, meaning its price swings are larger. A stock with a beta < 1.0 is less volatile. A beta of 0.8 means the stock is expected to be 20% less volatile than the market. It is a key measure of systematic, non-diversifiable risk.",
+      "type": "Risk Metric"
+    },
+    {
+      "concept": "Yield Curve Inversion",
+      "keywords": ["yield curve", "inversion", "inverted yield curve", "recession indicator"],
+      "summary": "A yield curve inversion is an unusual market condition where the yields on long-term bonds are lower than the yields on short-term bonds of the same credit quality.",
+      "explanation": "This is a classic and highly reliable predictor of an upcoming economic recession. It signals that investors have pessimistic long-term economic expectations. The most commonly watched inversion is when the 2-year Treasury yield is higher than the 10-year Treasury yield.",
+      "type": "Macroeconomic Indicator"
+    }
+  ]

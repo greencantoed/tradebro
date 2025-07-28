@@ -1,0 +1,39 @@
+# ================================================================= #
+# == Legion Framework v12.5 - Operator Control Panel (Pro Build) == #
+# ================================================================= #
+
+[model]
+# CORRECTED: This uses the latest stable Gemini 2.5 Pro model name.
+name = "gemini-2.5-pro"
+
+# --- COGNITIVE RESOURCE MANAGEMENT ---
+[generation_config]
+# Controls the model's output and reasoning process.
+# Max output tokens (including thinking tokens). Max is 65536.
+max_output_tokens = 65536
+# Max tokens for Chain of Thought reasoning (128-32768).
+# -1 enables dynamic thinking. 8192 is a robust starting point.
+# NOTE: This is a conceptual parameter. The Python SDK primarily uses max_output_tokens.
+# We include it here for future-proofing and as a guide for the system prompt.
+max_thinking_tokens = 8192
+
+# --- SYSTEM BEHAVIOR ---
+[system]
+# "agile" for speed, "rigorous" for auditable deep dives.
+operating_mode = "agile"
+
+[features]
+token_counter_mode = "summary"
+token_budget = 250000 # Increased budget for a more powerful model
+
+[cache]
+db_path = "cache/market_data.duckdb"
+staleness_hours = 4
+
+[parameters]
+max_tickers_per_call = 25
+max_reflection_tokens = 200
+
+[backtesting]
+commission_bps = 5
+slippage_bps = 10
