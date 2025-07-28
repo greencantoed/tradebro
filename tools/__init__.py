@@ -35,6 +35,8 @@ from .quantitative_analysis import (
     calculate_performance_metrics,
     optimize_portfolio,
     stress_test_portfolio,
+    optimise_moving_average_strategy,
+    optimize_risk_parity_portfolio,
     set_config as set_quant_config,
 )
 
@@ -73,6 +75,8 @@ __all__ = [
     'calculate_performance_metrics',
     'optimize_portfolio',
     'stress_test_portfolio',
+    'optimise_moving_average_strategy',
+    'optimize_risk_parity_portfolio',
     # Cognitive tools
     'log_self_reflection',
     'get_search_trend_analysis',

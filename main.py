@@ -89,6 +89,21 @@ def get_model(operating_mode: str):
     backtest_strategy_wrapper.__name__ = backtest_strategy.__name__
     backtest_strategy_wrapper.__doc__ = backtest_strategy.__doc__
 
+    # Wrapper for optimisation of moving average strategy with injected cache
+    def optimise_moving_average_strategy_wrapper(ticker: str, short_windows: list, long_windows: list, metric: str = 'sharpe_ratio'):
+        """Wrapper for optimise_moving_average_strategy with cache injected."""
+        return optimise_moving_average_strategy(ticker, short_windows, long_windows, cache, metric)
+    optimise_moving_average_strategy_wrapper.__name__ = optimise_moving_average_strategy.__name__
+    optimise_moving_average_strategy_wrapper.__doc__ = optimise_moving_average_strategy.__doc__
+
+    # Wrapper for risk parity portfolio optimisation with injected cache not needed (no cache used)
+    # but maintain consistent signature
+    def optimize_risk_parity_portfolio_wrapper(json_data: dict):
+        """Wrapper for optimize_risk_parity_portfolio (no cache needed)."""
+        return optimize_risk_parity_portfolio(json_data)
+    optimize_risk_parity_portfolio_wrapper.__name__ = optimize_risk_parity_portfolio.__name__
+    optimize_risk_parity_portfolio_wrapper.__doc__ = optimize_risk_parity_portfolio.__doc__
+
     all_tools = [
         get_historical_market_data_wrapper, get_financial_statements, get_analyst_ratings,
         get_insider_transactions, get_financial_news_headlines, screen_for_stocks,
@@ -97,6 +112,7 @@ def get_model(operating_mode: str):
         perform_econometric_analysis, calculate_technical_indicator, analyze_portfolio_risk,
         backtest_strategy_wrapper, generate_time_series_forecast, calculate_performance_metrics,
         optimize_portfolio, stress_test_portfolio,
+        optimise_moving_average_strategy_wrapper, optimize_risk_parity_portfolio_wrapper,
         log_self_reflection, get_search_trend_analysis, define_user_investment_profile,
         generate_investment_thesis, retrieve_knowledge
     ]

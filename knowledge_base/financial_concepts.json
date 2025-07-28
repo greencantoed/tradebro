@@ -10,7 +10,7 @@
       "concept": "Sharpe Ratio",
       "keywords": ["sharpe ratio", "risk-adjusted return", "risk", "volatility"],
       "summary": "The Sharpe Ratio measures the performance of an investment compared to a risk-free asset, after adjusting for its risk.",
-      "explanation": "It is calculated as (Return of Portfolio - Risk-Free Rate) / Standard Deviation of the Portfolio's Excess Return. A higher Sharpe Ratio indicates a better risk-adjusted return. A ratio > 2 is considered strong:contentReference[oaicite:0]{index=0}.",
+      "explanation": "It is calculated as (Return of Portfolio - Risk-Free Rate) / Standard Deviation of the Portfolio's Excess Return. A higher Sharpe Ratio indicates a better risk-adjusted return. Ratios above 2 are considered strong.",
       "type": "Risk Metric"
     },
     {
@@ -38,35 +38,35 @@
       "concept": "Sortino Ratio",
       "keywords": ["sortino ratio", "downside risk", "risk-adjusted return"],
       "summary": "The Sortino Ratio measures risk-adjusted return focusing only on downside volatility.",
-      "explanation": "It is calculated as (Return - Risk-Free Rate) / Downside Deviation. Unlike the Sharpe Ratio, it penalizes only harmful volatility. Ratios above 2 are preferred for better downside risk-adjusted returns:contentReference[oaicite:1]{index=1}.",
+      "explanation": "It is calculated as (Return - Risk-Free Rate) / Downside Deviation. Unlike the Sharpe Ratio, it penalizes only harmful volatility. Ratios above 2 are preferred for better downside risk-adjusted returns.",
       "type": "Risk Metric"
     },
     {
       "concept": "Calmar Ratio",
       "keywords": ["calmar ratio", "drawdown", "risk-adjusted return"],
       "summary": "The Calmar Ratio compares a strategy's annualized return to its maximum drawdown.",
-      "explanation": "Calculated as Annual Return / Maximum Drawdown. Ratios above 2 indicate a good balance of returns and downside risk:contentReference[oaicite:2]{index=2}.",
+      "explanation": "Calculated as Annual Return / Maximum Drawdown. Ratios above 2 indicate a good balance of returns and downside risk.",
       "type": "Risk Metric"
     },
     {
       "concept": "Profit Factor",
       "keywords": ["profit factor", "trading performance"],
       "summary": "Profit Factor is the ratio of gross profits to gross losses in a trading strategy.",
-      "explanation": "A Profit Factor above 1.75 suggests that a strategy is generating strong returns for each unit of loss incurred:contentReference[oaicite:3]{index=3}.",
+      "explanation": "A Profit Factor above 1.75 suggests that a strategy is generating strong returns for each unit of loss incurred.",
       "type": "Performance Metric"
     },
     {
       "concept": "Maximum Drawdown (MDD)",
       "keywords": ["maximum drawdown", "mdd", "peak-to-trough"],
       "summary": "Maximum drawdown measures the largest peak-to-trough decline in an investment's value.",
-      "explanation": "Lower drawdowns (<15%) indicate better capital preservation, whereas drawdowns above 25% require higher risk tolerance:contentReference[oaicite:4]{index=4}.",
+      "explanation": "Lower drawdowns (<15%) indicate better capital preservation, whereas drawdowns above 25% require higher risk tolerance.",
       "type": "Risk Metric"
     },
     {
       "concept": "Mean-Variance Optimization",
       "keywords": ["mean-variance", "modern portfolio theory", "optimization", "efficient frontier"],
       "summary": "A portfolio construction technique that selects asset weights to minimize risk for a given expected return.",
-      "explanation": "Developed by Harry Markowitz, mean-variance optimization uses expected returns, standard deviations and the covariance matrix to compute weights that minimize portfolio volatility for a target return:contentReference[oaicite:5]{index=5}.",
+      "explanation": "Developed by Harry Markowitz, mean-variance optimization uses expected returns, standard deviations and the covariance matrix to compute weights that minimize portfolio volatility for a target return.",
       "type": "Portfolio Construction"
     },
     {
@@ -82,6 +82,33 @@
       "summary": "A strategy based on the idea that prices will revert to their long-term mean.",
       "explanation": "Bollinger Bands are often used: buy when price falls below the lower band, sell when it rises above the upper band. The strategy assumes extremes are temporary and prices will revert.",
       "type": "Trading Strategy"
+    },
+    {
+      "concept": "Relative Strength Index (RSI) Strategy",
+      "keywords": ["rsi", "relative strength index", "momentum", "overbought", "oversold"],
+      "summary": "A momentum strategy that buys when an asset is oversold and sells when it is overbought.",
+      "explanation": "The RSI is a momentum oscillator that measures the speed and change of price movements. Typical thresholds are 30 (oversold) and 70 (overbought). A simple RSI strategy buys when RSI < 30 and sells when RSI > 70.",
+      "type": "Trading Strategy"
+    },
+    {
+      "concept": "Moving Average Optimization",
+      "keywords": ["moving average", "optimization", "strategy tuning"],
+      "summary": "A process of selecting short and long moving average windows to maximise a performance metric.",
+      "explanation": "By backtesting a range of moving average pairs (e.g., 10/20, 20/50, 50/200), a trader can identify which combination yields the best Sharpe or Sortino ratio. This tuning helps adapt the strategy to different market conditions.",
+      "type": "Strategy Optimization"
+    },
+    {
+      "concept": "Risk Parity Portfolio",
+      "keywords": ["risk parity", "risk balanced", "inverse volatility", "risk contributions"],
+      "summary": "A portfolio allocation approach that equalizes risk across assets by weighting them inversely proportional to their volatility.",
+      "explanation": "Each asset's weight is inversely proportional to its historical volatility. This ensures that each asset contributes the same level of risk to the overall portfolio, promoting diversification and risk balance.",
+      "type": "Portfolio Construction"
+    },
+    {
+      "concept": "MACD Strategy",
+      "keywords": ["MACD", "moving average convergence divergence", "trend following", "indicator"],
+      "summary": "A trading strategy based on the Moving Average Convergence Divergence indicator, which compares two exponential moving averages.",
+      "explanation": "The MACD line is the difference between a fast EMA (e.g., 12 days) and a slow EMA (e.g., 26 days). A signal line (e.g., 9-day EMA of the MACD) is used to trigger buy and sell signals: buy when the MACD crosses above the signal line, sell when it crosses below.",
+      "type": "Trading Strategy"
     }
-  ]
-      
+]

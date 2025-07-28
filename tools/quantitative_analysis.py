@@ -135,6 +135,40 @@ def optimize_portfolio(json_data: dict) -> Any:
         return {"tool_error": f"Portfolio optimization failed: {e}"}
 
 
+def optimize_risk_parity_portfolio(json_data: dict) -> Any:
+    """
+    Compute risk-parity (inverse volatility) portfolio weights from a JSON
+    representation of price data. Each asset's weight is inversely
+    proportional to its historical volatility. Returns weights and expected
+    annualised return and volatility.
+
+    Args:
+        json_data: JSON string or dict with 'split' orientation as used in
+            other functions.
+
+    Returns:
+        A dictionary with weights keyed by asset symbol and expected
+        portfolio return & volatility. If computation fails, returns
+        `tool_error`.
+    """
+    try:
+        df = pd.read_json(json.dumps(json_data), orient='split')
+        returns = df.pct_change().dropna()
+        # Compute volatilities
+        vol = returns.std()
+        inv_vol = 1 / vol
+        weights = inv_vol / inv_vol.sum()
+        portfolio_return = float((weights @ returns.mean().values))
+        portfolio_vol = float(np.sqrt(weights @ returns.cov().values @ weights))
+        return {
+            'weights': {col: round(w, 4) for col, w in zip(df.columns, weights)},
+            'expected_return': round(portfolio_return * 252 * 100, 2),
+            'expected_volatility': round(portfolio_vol * np.sqrt(252) * 100, 2),
+        }
+    except Exception as e:
+        return {"tool_error": f"Risk-parity optimization failed: {e}"}
+
+
 def stress_test_portfolio(portfolio_holdings: List[Dict[str, Any]], shock_pct: float = -0.2) -> Any:
     """
     Simulate the impact of a market shock on a portfolio by applying a uniform
@@ -210,8 +244,12 @@ def backtest_strategy(ticker: str, strategy_name: str, cache: Any) -> Any:
         bt_config = config.get('backtesting', {})
         commission = bt_config.get('commission_bps', 5) / 10_000
         slippage = bt_config.get('slippage_bps', 10) / 10_000
+        # Define available strategies in a dictionary keyed by name. Each entry is
+        # a tuple of (Strategy class, kwargs). Additional strategies can be
+        # appended here to extend functionality.
         strategies: Dict[str, Tuple[type, Dict[str, Any]]] = {}
-        # Simple moving-average crossover (default)
+
+        # Simple moving-average crossover: buy when short SMA crosses above long SMA
         class SmaCross(Strategy):
             n1, n2 = 20, 50
             def init(self):
@@ -223,7 +261,9 @@ def backtest_strategy(ticker: str, strategy_name: str, cache: Any) -> Any:
                 elif crossover(self.sma2, self.sma1):
                     self.sell()
         strategies['SmaCross'] = (SmaCross, {})
-        # Momentum strategy: buy when price above 50-day MA and sell when below
+
+        # Momentum strategy: buy when price is above its 50-day moving average,
+        # sell when below. This captures upward or downward momentum.
         class Momentum(Strategy):
             window = 50
             def init(self):
@@ -236,7 +276,9 @@ def backtest_strategy(ticker: str, strategy_name: str, cache: Any) -> Any:
                     self.position.close()
                     self.sell()
         strategies['Momentum'] = (Momentum, {})
-        # Mean Reversion using Bollinger Bands
+
+        # Mean Reversion using Bollinger Bands: buy when price touches lower band,
+        # sell when price touches upper band. Assumes prices revert to the mean.
         class MeanReversion(Strategy):
             window = 20
             std_mult = 2
@@ -255,6 +297,54 @@ def backtest_strategy(ticker: str, strategy_name: str, cache: Any) -> Any:
                     self.position.close()
                     self.sell()
         strategies['MeanReversion'] = (MeanReversion, {})
+
+        # Relative Strength Index (RSI) strategy: buy when RSI falls below oversold
+        # threshold (30) and sell when RSI rises above overbought threshold (70).
+        class RSI(Strategy):
+            window = 14
+            oversold = 30
+            overbought = 70
+            def init(self):
+                self.prices = self.data.Close
+            def next(self):
+                # Only compute RSI when enough history is available
+                if len(self.prices) < self.window + 1:
+                    return
+                series = pd.Series(self.prices[-(self.window + 1):])
+                delta = series.diff()
+                gain = delta.where(delta > 0, 0).rolling(window=self.window).mean().iloc[-1]
+                loss = (-delta.where(delta < 0, 0)).rolling(window=self.window).mean().iloc[-1]
+                rs = gain / loss if loss != 0 else 0
+                rsi = 100 - (100 / (1 + rs))
+                if rsi < self.oversold:
+                    self.position.close()
+                    self.buy()
+                elif rsi > self.overbought:
+                    self.position.close()
+                    self.sell()
+        strategies['RSI'] = (RSI, {})
+
+        # Moving Average Convergence Divergence (MACD) strategy: uses fast and slow
+        # exponential moving averages and their difference (MACD) versus a signal line.
+        class MACD(Strategy):
+            fast_period = 12
+            slow_period = 26
+            signal_period = 9
+            def init(self):
+                close = self.data.Close
+                self.ema_fast = self.I(lambda x: pd.Series(x).ewm(span=self.fast_period, adjust=False).mean(), close)
+                self.ema_slow = self.I(lambda x: pd.Series(x).ewm(span=self.slow_period, adjust=False).mean(), close)
+                self.macd_line = self.I(lambda fast, slow: fast - slow, self.ema_fast, self.ema_slow)
+                self.signal_line = self.I(
+                    lambda macd: pd.Series(macd).ewm(span=self.signal_period, adjust=False).mean(), self.macd_line
+                )
+            def next(self):
+                # Buy when MACD crosses above signal line; sell when crosses below
+                if crossover(self.macd_line, self.signal_line):
+                    self.buy()
+                elif crossover(self.signal_line, self.macd_line):
+                    self.sell()
+        strategies['MACD'] = (MACD, {})
 
         if strategy_name not in strategies:
             return {"tool_error": "Unsupported strategy."}
@@ -287,3 +377,43 @@ def generate_time_series_forecast(json_data: dict, forecast_periods: int = 30) -
         return {'forecast': [round(val, 2) for val in model.forecast(steps=forecast_periods)]}
     except Exception as e:
         return {"tool_error": f"ARIMA forecast failed: {e}"}
+
+# -----------------------------------------------------------------------------
+# Portfolio Risk Parity Optimization
+# -----------------------------------------------------------------------------
+
+def optimize_risk_parity_portfolio(json_data: dict) -> Any:
+    """
+    Compute risk parity (inverse volatility) portfolio weights from a JSON
+    representation of price data. Risk parity allocates capital inversely
+    proportional to asset volatility, equalising risk contributions across
+    assets. Returns weights and expected annualised return & volatility.
+
+    Args:
+        json_data: JSON-formatted OHLCV or price DataFrame (split orientation).
+
+    Returns:
+        Dictionary with asset weights, expected annual return and annualised volatility.
+    """
+    try:
+        df = pd.read_json(json.dumps(json_data), orient='split')
+        # Use percentage returns
+        returns = df.pct_change().dropna()
+        # Calculate volatilities (standard deviation) of each asset
+        vols = returns.std()
+        # Avoid division by zero
+        vols[vols == 0] = np.nan
+        inv_vols = 1.0 / vols
+        weights = inv_vols / inv_vols.sum()
+        mu = returns.mean()
+        cov = returns.cov()
+        # Expected annual return and volatility
+        exp_return = float(weights @ mu.values) * 252
+        exp_vol = float(np.sqrt(weights @ cov.values @ weights)) * np.sqrt(252)
+        return {
+            'weights': {col: round(w, 4) for col, w in zip(df.columns, weights)},
+            'expected_return': round(exp_return * 100, 2),
+            'expected_volatility': round(exp_vol * 100, 2),
+        }
+    except Exception as e:
+        return {"tool_error": f"Risk parity optimization failed: {e}"}
